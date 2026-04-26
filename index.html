@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Meguri — Managed Ecosystem Generating Unified Revenue Internally</title>
+  <meta name="description" content="A framework for designing integrated multi-node ecosystems that sustain themselves through internal circulation of visitors, revenue, and investment.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400&family=Instrument+Sans:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ink: #1a1814;
+      --ink-mid: #4a4640;
+      --ink-light: #8a8680;
+      --paper: #f5f2ec;
+      --paper-warm: #ede9e0;
+      --accent: #c4651a;
+      --accent-light: #e8a96e;
+      --accent-pale: #f5e6d3;
+      --rule: rgba(26,24,20,0.12);
+      --serif: 'Cormorant Garamond', Georgia, serif;
+      --mono: 'DM Mono', monospace;
+      --sans: 'Instrument Sans', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--serif);
+      font-size: 18px;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* GRAIN OVERLAY */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 1000;
+      opacity: 0.6;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      padding: 1.25rem 3rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(245,242,236,0.88);
+      backdrop-filter: blur(12px);
+      border-bottom: 0.5px solid var(--rule);
+    }
+
+    .nav-logo {
+      font-family: var(--mono);
+      font-size: 13px;
+      font-weight: 300;
+      letter-spacing: 0.12em;
+      color: var(--ink);
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2.5rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-family: var(--sans);
+      font-size: 12px;
+      font-weight: 400;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--ink-mid);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--accent); }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      padding: 8rem 3rem 4rem;
+      gap: 4rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      right: -120px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 600px;
+      height: 600px;
+      border-radius: 50%;
+      border: 0.5px solid var(--rule);
+      pointer-events: none;
+    }
+
+    .hero-left { position: relative; z-index: 2; }
+
+    .hero-eyebrow {
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 300;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1.5rem;
+      opacity: 0;
+      animation: fadeUp 0.8s ease forwards 0.2s;
+    }
+
+    .hero-title {
+      font-size: clamp(3.5rem, 6vw, 5.5rem);
+      font-weight: 300;
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+      opacity: 0;
+      animation: fadeUp 0.8s ease forwards 0.35s;
+    }
+
+    .hero-title em {
+      font-style: italic;
+      color: var(--accent);
+    }
+
+    .hero-subtitle {
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 300;
+      letter-spacing: 0.18em;
+      color: var(--ink-light);
+      margin-bottom: 2.5rem;
+      opacity: 0;
+      animation: fadeUp 0.8s ease forwards 0.5s;
+    }
+
+    .hero-desc {
+      font-size: 1.05rem;
+      font-weight: 300;
+      color: var(--ink-mid);
+      max-width: 440px;
+      margin-bottom: 3rem;
+      opacity: 0;
+      animation: fadeUp 0.8s ease forwards 0.65s;
+    }
+
+    .hero-ctas {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      opacity: 0;
+      animation: fadeUp 0.8s ease forwards 0.8s;
+    }
+
+    .btn-primary {
+      font-family: var(--sans);
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--paper);
+      background: var(--ink);
+      border: none;
+      padding: 0.85rem 2rem;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.2s, transform 0.15s;
+      display: inline-block;
+    }
+
+    .btn-primary:hover {
+      background: var(--accent);
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      font-family: var(--sans);
+      font-size: 12px;
+      font-weight: 400;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ink);
+      background: transparent;
+      border: 0.5px solid var(--ink);
+      padding: 0.85rem 2rem;
+      cursor: pointer;
+      text-decoration: none;
+      transition: border-color 0.2s, color 0.2s, transform 0.15s;
+      display: inline-block;
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      transform: translateY(-1px);
+    }
+
+    /* HERO RIGHT — loop diagram */
+    .hero-right {
+      position: relative;
+      z-index: 2;
+      opacity: 0;
+      animation: fadeIn 1.2s ease forwards 0.9s;
+    }
+
+    .loop-diagram {
+      width: 100%;
+      max-width: 480px;
+      margin: 0 auto;
+    }
+
+    /* DIVIDER */
+    .section-divider {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      padding: 0 3rem;
+      margin: 1rem 0;
+    }
+
+    .section-divider::before,
+    .section-divider::after {
+      content: '';
+      flex: 1;
+      height: 0.5px;
+      background: var(--rule);
+    }
+
+    .section-divider span {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--ink-light);
+      white-space: nowrap;
+    }
+
+    /* SECTIONS */
+    section {
+      padding: 6rem 3rem;
+    }
+
+    .section-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 300;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1rem;
+    }
+
+    .section-heading {
+      font-size: clamp(2rem, 3.5vw, 3rem);
+      font-weight: 300;
+      line-height: 1.15;
+      margin-bottom: 2rem;
+      max-width: 640px;
+    }
+
+    .section-heading em { font-style: italic; color: var(--accent); }
+
+    /* CONCEPT SECTION */
+    #concept {
+      background: var(--ink);
+      color: var(--paper);
+      position: relative;
+      overflow: hidden;
+    }
+
+    #concept::before {
+      content: 'MEGURI';
+      position: absolute;
+      right: -2rem;
+      top: 50%;
+      transform: translateY(-50%) rotate(90deg);
+      font-family: var(--serif);
+      font-size: 14rem;
+      font-weight: 300;
+      color: rgba(255,255,255,0.03);
+      pointer-events: none;
+      white-space: nowrap;
+      letter-spacing: 0.1em;
+    }
+
+    #concept .section-label { color: var(--accent-light); }
+
+    #concept .section-heading { color: var(--paper); max-width: 800px; }
+
+    .concept-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      margin-top: 4rem;
+    }
+
+    .concept-body {
+      font-size: 1.05rem;
+      font-weight: 300;
+      color: rgba(245,242,236,0.75);
+      line-height: 1.8;
+      max-width: 500px;
+    }
+
+    .acronym-block {
+      border-left: 1px solid rgba(196,101,26,0.4);
+      padding-left: 2rem;
+    }
+
+    .acronym-row {
+      display: flex;
+      gap: 1.5rem;
+      align-items: baseline;
+      margin-bottom: 1rem;
+      border-bottom: 0.5px solid rgba(255,255,255,0.06);
+      padding-bottom: 1rem;
+    }
+
+    .acronym-row:last-child { border-bottom: none; margin-bottom: 0; }
+
+    .acronym-letter {
+      font-family: var(--serif);
+      font-size: 2rem;
+      font-weight: 300;
+      color: var(--accent-light);
+      width: 32px;
+      flex-shrink: 0;
+      font-style: italic;
+    }
+
+    .acronym-word {
+      font-family: var(--sans);
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      color: var(--paper);
+    }
+
+    .acronym-desc {
+      font-family: var(--sans);
+      font-size: 12px;
+      font-weight: 400;
+      color: rgba(245,242,236,0.5);
+      margin-top: 2px;
+    }
+
+    /* LOOPS SECTION */
+    #loops { background: var(--paper-warm); }
+
+    .loops-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5px;
+      margin-top: 3rem;
+      background: var(--rule);
+    }
+
+    .loop-card {
+      background: var(--paper);
+      padding: 2.5rem 2rem;
+      position: relative;
+      overflow: hidden;
+      transition: background 0.3s;
+    }
+
+    .loop-card:hover { background: var(--accent-pale); }
+
+    .loop-number {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      color: var(--ink-light);
+      margin-bottom: 1.5rem;
+    }
+
+    .loop-icon {
+      width: 40px;
+      height: 40px;
+      margin-bottom: 1.25rem;
+      color: var(--accent);
+    }
+
+    .loop-name {
+      font-size: 1.4rem;
+      font-weight: 300;
+      font-style: italic;
+      margin-bottom: 0.75rem;
+      color: var(--ink);
+    }
+
+    .loop-desc {
+      font-family: var(--sans);
+      font-size: 13px;
+      font-weight: 400;
+      line-height: 1.7;
+      color: var(--ink-mid);
+    }
+
+    /* HYPOTHESES */
+    #hypotheses { background: var(--paper); }
+
+    .hyp-list {
+      margin-top: 3rem;
+      display: grid;
+      gap: 0;
+      border-top: 0.5px solid var(--rule);
+    }
+
+    .hyp-item {
+      display: grid;
+      grid-template-columns: 80px 1fr;
+      gap: 2rem;
+      padding: 2rem 0;
+      border-bottom: 0.5px solid var(--rule);
+      align-items: start;
+    }
+
+    .hyp-tag {
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 300;
+      letter-spacing: 0.15em;
+      color: var(--accent);
+      padding-top: 0.25rem;
+    }
+
+    .hyp-text {
+      font-size: 1rem;
+      font-weight: 300;
+      line-height: 1.7;
+      color: var(--ink-mid);
+    }
+
+    .hyp-text strong {
+      font-weight: 400;
+      color: var(--ink);
+    }
+
+    /* CASE STUDY */
+    #case {
+      background: var(--ink);
+      color: var(--paper);
+    }
+
+    .case-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      align-items: start;
+    }
+
+    .case-left .section-label { color: var(--accent-light); }
+    .case-left .section-heading { color: var(--paper); }
+
+    .case-desc {
+      font-size: 1rem;
+      font-weight: 300;
+      color: rgba(245,242,236,0.7);
+      line-height: 1.8;
+      margin-bottom: 2rem;
+    }
+
+    .case-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5px;
+      background: rgba(255,255,255,0.08);
+    }
+
+    .stat-cell {
+      background: var(--ink);
+      padding: 1.5rem;
+    }
+
+    .stat-num {
+      font-family: var(--serif);
+      font-size: 2.2rem;
+      font-weight: 300;
+      color: var(--accent-light);
+      font-style: italic;
+    }
+
+    .stat-label {
+      font-family: var(--sans);
+      font-size: 11px;
+      font-weight: 400;
+      letter-spacing: 0.08em;
+      color: rgba(245,242,236,0.5);
+      margin-top: 0.25rem;
+    }
+
+    .planet-list {
+      display: grid;
+      gap: 0;
+      border-top: 0.5px solid rgba(255,255,255,0.1);
+    }
+
+    .planet-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.85rem 0;
+      border-bottom: 0.5px solid rgba(255,255,255,0.07);
+      font-family: var(--sans);
+      font-size: 13px;
+    }
+
+    .planet-name { color: rgba(245,242,236,0.8); }
+    .planet-type {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      color: var(--accent-light);
+      text-transform: uppercase;
+    }
+
+    /* RESEARCH / ABOUT */
+    #research { background: var(--paper-warm); }
+
+    .research-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      align-items: start;
+      margin-top: 3rem;
+    }
+
+    .research-body {
+      font-size: 1rem;
+      font-weight: 300;
+      line-height: 1.8;
+      color: var(--ink-mid);
+    }
+
+    .research-body p { margin-bottom: 1.25rem; }
+
+    .method-list {
+      display: grid;
+      gap: 0;
+      border-top: 0.5px solid var(--rule);
+    }
+
+    .method-item {
+      padding: 1.25rem 0;
+      border-bottom: 0.5px solid var(--rule);
+    }
+
+    .method-name {
+      font-family: var(--sans);
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      color: var(--ink);
+      margin-bottom: 0.3rem;
+    }
+
+    .method-desc {
+      font-family: var(--sans);
+      font-size: 12px;
+      font-weight: 400;
+      color: var(--ink-light);
+      line-height: 1.5;
+    }
+
+    /* CONTACT */
+    #contact {
+      background: var(--paper);
+      text-align: center;
+      padding: 8rem 3rem;
+    }
+
+    #contact .section-heading {
+      margin: 0 auto 1.5rem;
+      text-align: center;
+      max-width: 560px;
+    }
+
+    .contact-sub {
+      font-family: var(--sans);
+      font-size: 14px;
+      color: var(--ink-light);
+      margin-bottom: 3rem;
+    }
+
+    .contact-links {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .contact-link {
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 300;
+      letter-spacing: 0.12em;
+      color: var(--ink-mid);
+      text-decoration: none;
+      border-bottom: 0.5px solid var(--rule);
+      padding-bottom: 2px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+
+    .contact-link:hover {
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+
+    /* FOOTER */
+    footer {
+      padding: 2rem 3rem;
+      border-top: 0.5px solid var(--rule);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .footer-left {
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 300;
+      letter-spacing: 0.12em;
+      color: var(--ink-light);
+    }
+
+    .footer-right {
+      font-family: var(--sans);
+      font-size: 11px;
+      color: var(--ink-light);
+    }
+
+    /* ANIMATIONS */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 900px) {
+      nav { padding: 1rem 1.5rem; }
+      .nav-links { gap: 1.5rem; }
+      .hero { grid-template-columns: 1fr; padding: 7rem 1.5rem 3rem; gap: 3rem; }
+      .hero::after { display: none; }
+      section { padding: 4rem 1.5rem; }
+      .concept-grid, .loops-grid, .case-grid, .research-grid { grid-template-columns: 1fr; }
+      .loops-grid { grid-template-columns: 1fr; }
+      footer { flex-direction: column; gap: 0.5rem; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a class="nav-logo" href="#">meguri.in</a>
+    <ul class="nav-links">
+      <li><a href="#concept">Concept</a></li>
+      <li><a href="#loops">Framework</a></li>
+      <li><a href="#case">Case Study</a></li>
+      <li><a href="#research">Research</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-left">
+      <p class="hero-eyebrow">Doctoral Research Framework · 2027</p>
+      <h1 class="hero-title">The <em>Meguri</em><br>Framework</h1>
+      <p class="hero-subtitle">Managed Ecosystem Generating Unified Revenue Internally</p>
+      <p class="hero-desc">A framework for designing integrated multi-node developments that sustain themselves through internal circulation — independent of external market conditions.</p>
+      <div class="hero-ctas">
+        <a href="#concept" class="btn-primary">Explore the framework</a>
+        <a href="#research" class="btn-secondary">Read the research</a>
+      </div>
+    </div>
+    <div class="hero-right">
+      <svg class="loop-diagram" viewBox="0 0 420 420" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Outer ring -->
+        <circle cx="210" cy="210" r="180" stroke="#1a1814" stroke-width="0.5" stroke-dasharray="4 6" opacity="0.2"/>
+        <circle cx="210" cy="210" r="130" stroke="#c4651a" stroke-width="0.5" opacity="0.3"/>
+        <!-- Loop arrows on circle path -->
+        <path d="M 210 80 A 130 130 0 0 1 322 272" stroke="#c4651a" stroke-width="1.5" fill="none" opacity="0.7" marker-end="url(#arr)"/>
+        <path d="M 322 272 A 130 130 0 0 1 98 272" stroke="#c4651a" stroke-width="1.5" fill="none" opacity="0.7" marker-end="url(#arr)"/>
+        <path d="M 98 272 A 130 130 0 0 1 210 80" stroke="#c4651a" stroke-width="1.5" fill="none" opacity="0.7" marker-end="url(#arr)"/>
+        <!-- Center -->
+        <circle cx="210" cy="210" r="38" fill="#1a1814"/>
+        <text x="210" y="206" text-anchor="middle" font-family="'Cormorant Garamond', serif" font-size="13" fill="#f5f2ec" font-style="italic">Internal</text>
+        <text x="210" y="222" text-anchor="middle" font-family="'Cormorant Garamond', serif" font-size="13" fill="#c4651a" font-style="italic">Circulation</text>
+        <!-- Node labels -->
+        <text x="210" y="58" text-anchor="middle" font-family="'DM Mono', monospace" font-size="10" fill="#1a1814" letter-spacing="0.12em">VISITOR LOOP</text>
+        <text x="358" y="290" text-anchor="middle" font-family="'DM Mono', monospace" font-size="10" fill="#1a1814" letter-spacing="0.12em">INVENTORY</text>
+        <text x="358" y="304" text-anchor="middle" font-family="'DM Mono', monospace" font-size="10" fill="#1a1814" letter-spacing="0.12em">LOOP</text>
+        <text x="62" y="290" text-anchor="middle" font-family="'DM Mono', monospace" font-size="10" fill="#1a1814" letter-spacing="0.12em">COMPOUND</text>
+        <text x="62" y="304" text-anchor="middle" font-family="'DM Mono', monospace" font-size="10" fill="#1a1814" letter-spacing="0.12em">LOOP</text>
+        <!-- Node dots -->
+        <circle cx="210" cy="80" r="5" fill="#c4651a"/>
+        <circle cx="322" cy="272" r="5" fill="#c4651a"/>
+        <circle cx="98" cy="272" r="5" fill="#c4651a"/>
+        <defs>
+          <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+            <path d="M2 2L8 5L2 8" fill="none" stroke="#c4651a" stroke-width="1.5"/>
+          </marker>
+        </defs>
+      </svg>
+    </div>
+  </section>
+
+  <div class="section-divider"><span>§ 01</span></div>
+
+  <!-- CONCEPT -->
+  <section id="concept">
+    <p class="section-label reveal">The Concept</p>
+    <h2 class="section-heading reveal">What if a destination did not need anything around it to succeed?</h2>
+    <div class="concept-grid">
+      <p class="concept-body reveal">Meguri is a single integrated ecosystem where multiple experience-driven nodes operate under one master structure — each commercially independent, but designed to circulate visitors and revenue between them. Residential landowners are structurally tied to the ecosystem's success. Every addition strengthens the whole.<br><br>The place does not rely on what is around it. It is built to sustain itself from within.</p>
+      <div class="acronym-block reveal">
+        <div class="acronym-row">
+          <span class="acronym-letter">M</span>
+          <div><div class="acronym-word">Managed</div><div class="acronym-desc">Single master governance structure</div></div>
+        </div>
+        <div class="acronym-row">
+          <span class="acronym-letter">E</span>
+          <div><div class="acronym-word">Ecosystem</div><div class="acronym-desc">Interdependent, not isolated nodes</div></div>
+        </div>
+        <div class="acronym-row">
+          <span class="acronym-letter">G</span>
+          <div><div class="acronym-word">Generating</div><div class="acronym-desc">Endogenous demand creation</div></div>
+        </div>
+        <div class="acronym-row">
+          <span class="acronym-letter">U</span>
+          <div><div class="acronym-word">Unified</div><div class="acronym-desc">Shared infrastructure & identity</div></div>
+        </div>
+        <div class="acronym-row">
+          <span class="acronym-letter">R</span>
+          <div><div class="acronym-word">Revenue</div><div class="acronym-desc">Multi-stream commercial viability</div></div>
+        </div>
+        <div class="acronym-row">
+          <span class="acronym-letter">I</span>
+          <div><div class="acronym-word">Internally</div><div class="acronym-desc">Independent of external conditions</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"><span>§ 02</span></div>
+
+  <!-- LOOPS -->
+  <section id="loops">
+    <p class="section-label reveal">The Framework</p>
+    <h2 class="section-heading reveal">Three self-reinforcing loops<br>that drive the system</h2>
+    <div class="loops-grid">
+      <div class="loop-card reveal">
+        <div class="loop-number">Loop 01</div>
+        <svg class="loop-icon" viewBox="0 0 40 40" fill="none">
+          <circle cx="20" cy="20" r="16" stroke="currentColor" stroke-width="1"/>
+          <path d="M20 4 A16 16 0 0 1 36 20" stroke="currentColor" stroke-width="1.5" marker-end="url(#mini-arr)"/>
+          <defs><marker id="mini-arr" viewBox="0 0 8 8" refX="6" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M1 1L7 4L1 7" fill="none" stroke="currentColor" stroke-width="1.5"/></marker></defs>
+        </svg>
+        <div class="loop-name">Visitor Loop</div>
+        <p class="loop-desc">A visitor arrives for one node and encounters the others. Dwell time extends. Spend increases across the ecosystem. They return. They refer. The internal pull compounds over time.</p>
+      </div>
+      <div class="loop-card reveal">
+        <div class="loop-number">Loop 02</div>
+        <svg class="loop-icon" viewBox="0 0 40 40" fill="none">
+          <rect x="4" y="12" width="32" height="22" rx="2" stroke="currentColor" stroke-width="1"/>
+          <path d="M14 12V8a6 6 0 0 1 12 0v4" stroke="currentColor" stroke-width="1"/>
+          <circle cx="20" cy="23" r="3" fill="currentColor" opacity="0.6"/>
+        </svg>
+        <div class="loop-name">Inventory Loop</div>
+        <p class="loop-desc">Plot owners build residential assets within the ecosystem and return them for managed hospitality use. They earn rental income. Their land appreciates. The developer acquires inventory without bearing construction cost.</p>
+      </div>
+      <div class="loop-card reveal">
+        <div class="loop-number">Loop 03</div>
+        <svg class="loop-icon" viewBox="0 0 40 40" fill="none">
+          <path d="M6 34 L6 20 M14 34 L14 14 M22 34 L22 8 M30 34 L30 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          <path d="M4 22 Q18 10 32 6" stroke="currentColor" stroke-width="1" stroke-dasharray="2 2" opacity="0.5"/>
+        </svg>
+        <div class="loop-name">Compounding Loop</div>
+        <p class="loop-desc">Each new node increases the ecosystem's draw. Higher footfall raises revenue. Rising revenue increases land value. Greater land value attracts more owners. Every addition strengthens every part that came before it.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"><span>§ 03</span></div>
+
+  <!-- HYPOTHESES -->
+  <section id="hypotheses">
+    <p class="section-label reveal">Research Hypotheses</p>
+    <h2 class="section-heading reveal">Four testable propositions<br>built from theory</h2>
+    <div class="hyp-list">
+      <div class="hyp-item reveal">
+        <span class="hyp-tag">H1</span>
+        <p class="hyp-text">Nodes sharing an <strong>experiential journey</strong> (agro-tourism → wellness → accommodation) will exhibit stronger positive cross-demand effects than nodes with low experiential overlap.</p>
+      </div>
+      <div class="hyp-item reveal">
+        <span class="hyp-tag">H2</span>
+        <p class="hyp-text">A multi-node system with <strong>designed interdependency</strong> will show lower revenue volatility across seasons than comparable standalone single-node operations.</p>
+      </div>
+      <div class="hyp-item reveal">
+        <span class="hyp-tag">H3</span>
+        <p class="hyp-text">Residential nodes embedded within an active experiential ecosystem will demonstrate <strong>higher long-term asset retention</strong> and repeat engagement than those in isolated developments.</p>
+      </div>
+      <div class="hyp-item reveal">
+        <span class="hyp-tag">H4</span>
+        <p class="hyp-text">The presence of a <strong>wellness or slow-consumption node</strong> will extend average visitor dwell time and increase per-visit spend across the ecosystem.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"><span>§ 04</span></div>
+
+  <!-- CASE STUDY -->
+  <section id="case">
+    <div class="case-grid">
+      <div class="case-left">
+        <p class="section-label reveal">Live Case Study</p>
+        <h2 class="section-heading reveal">Vedbhoomi, Raigad —<br>a <em>live operating</em><br>system</h2>
+        <p class="case-desc reveal">The research is not theoretical. Vedbhoomi is 51 acres in Raigad, Maharashtra — nine nodes, each with its own commercial model, all operating within one ecosystem. The researcher is the developer and operator, with direct access to every transaction, every visitor record, and every stakeholder decision across every phase of development.</p>
+        <div class="case-stats reveal">
+          <div class="stat-cell">
+            <div class="stat-num">51</div>
+            <div class="stat-label">acres, contiguous</div>
+          </div>
+          <div class="stat-cell">
+            <div class="stat-num">9</div>
+            <div class="stat-label">thematic nodes</div>
+          </div>
+          <div class="stat-cell">
+            <div class="stat-num">~5</div>
+            <div class="stat-label">acres per planet</div>
+          </div>
+          <div class="stat-cell">
+            <div class="stat-num">∞</div>
+            <div class="stat-label">data access</div>
+          </div>
+        </div>
+      </div>
+      <div class="case-right">
+        <p class="section-label reveal" style="color:rgba(196,101,26,0.7);">Nine Planets</p>
+        <div class="planet-list reveal">
+          <div class="planet-item"><span class="planet-name">Sun — Mitraay Agro Resort</span><span class="planet-type">Operational</span></div>
+          <div class="planet-item"><span class="planet-name">Earth — Vasundhara</span><span class="planet-type">Plots open</span></div>
+          <div class="planet-item"><span class="planet-name">Saturn — Krushnakunj</span><span class="planet-type">Launching Jul 2026</span></div>
+          <div class="planet-item"><span class="planet-name">Mercury — Adventure Park</span><span class="planet-type">Planned</span></div>
+          <div class="planet-item"><span class="planet-name">Mars — Shivaji Maharaj Empire</span><span class="planet-type">Planned</span></div>
+          <div class="planet-item"><span class="planet-name">Jupiter — International Hub</span><span class="planet-type">Planned</span></div>
+          <div class="planet-item"><span class="planet-name">Venus — Yoga Centre</span><span class="planet-type">Planned</span></div>
+          <div class="planet-item"><span class="planet-name">Uranus — Gaushala</span><span class="planet-type">Planned</span></div>
+          <div class="planet-item"><span class="planet-name">Neptune — Naturopathy Centre</span><span class="planet-type">Planned</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"><span>§ 05</span></div>
+
+  <!-- RESEARCH -->
+  <section id="research">
+    <p class="section-label reveal">The Research</p>
+    <h2 class="section-heading reveal">A longitudinal study<br>of a <em>live system</em></h2>
+    <div class="research-grid">
+      <div class="research-body reveal">
+        <p>Existing scholarship on integrated resorts concentrates on large-scale, capital-intensive, brand-led complexes — Marina Bay Sands, Sentosa. The firm, not the designed ecosystem, is the unit of analysis.</p>
+        <p>This study addresses both gaps: extending business-ecosystem theory into physical, place-based development, and producing a replicable framework for small-to-medium developers, planners, and tourism boards.</p>
+        <p>The researcher's dual role as developer-operator provides continuous, unmediated access to a live operating system — enabling longitudinal tracking, real-time variable control, and the ability to deploy and measure design interventions as they unfold.</p>
+        <p style="font-family:'DM Mono',monospace;font-size:12px;color:var(--ink-light);letter-spacing:0.08em;">Aditya Mithare · B.Tech Mechatronics (CGPA 8.8) · PhD Candidate · 2027</p>
+      </div>
+      <div class="reveal">
+        <div class="method-list">
+          <div class="method-item">
+            <div class="method-name">System Dynamics Modelling</div>
+            <div class="method-desc">Map reinforcing and balancing feedback loops between nodes; simulate design interventions</div>
+          </div>
+          <div class="method-item">
+            <div class="method-name">Panel-Data Regression</div>
+            <div class="method-desc">Quantify each node's contribution to system revenue; isolate cross-node demand effects</div>
+          </div>
+          <div class="method-item">
+            <div class="method-name">Cross-Case Node Analysis</div>
+            <div class="method-desc">Identify which node combinations produce the strongest mutual demand lift</div>
+          </div>
+          <div class="method-item">
+            <div class="method-name">Thematic Analysis</div>
+            <div class="method-desc">Interpret visitor motivations and cross-node engagement logic from interviews and field notes</div>
+          </div>
+          <div class="method-item">
+            <div class="method-name">Comparative Benchmarking</div>
+            <div class="method-desc">Situate findings against integrated-resort and mixed-use development literature</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"><span>§ 06</span></div>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <p class="section-label reveal" style="text-align:center;">Get in touch</p>
+    <h2 class="section-heading reveal">For research collaboration,<br>developer enquiries,<br>or <em>site visits</em></h2>
+    <p class="contact-sub reveal">Vedbhoomi, Nijampur Mangoan, Raigad, Maharashtra · 2.5 hrs from Mumbai · 2 hrs from Pune</p>
+    <div class="contact-links reveal">
+      <a class="contact-link" href="https://vedbhoomi.world" target="_blank">vedbhoomi.world</a>
+      <a class="contact-link" href="tel:+919112255539">+91 91122 55539</a>
+      <a class="contact-link" href="mailto:hello@meguri.in">hello@meguri.in</a>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-left">© 2026 Meguri · meguri.in</div>
+    <div class="footer-right">Aditya Mithare · Vedbhoomi · Raigad, Maharashtra</div>
+  </footer>
+
+  <script>
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => entry.target.classList.add('visible'), i * 60);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+    reveals.forEach(el => observer.observe(el));
+  </script>
+
+</body>
+</html>
